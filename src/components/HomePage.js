@@ -16,7 +16,7 @@ export default function HomePage() {
     return (
         <HomeCSS>
             <div>  
-                { <img id= 'backgroundImg' src='./images/5.jpg' alt='backgroundImg'></img> }
+                { <img id= 'backgroundImg' src='../images/5.jpg' alt='backgroundImg'></img> }
             </div>
     
         </HomeCSS>
