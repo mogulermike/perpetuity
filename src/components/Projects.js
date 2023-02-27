@@ -30,7 +30,7 @@ const CustomCSS = styled.div`
     color:white;
 }
 #projectImg{
-    height:auto;
+    height:366.66px;
     width:550px;
 }
 
@@ -67,7 +67,7 @@ const Projects = () => {
         <div id="projectsContainer">
             <div id="two" className='navClick'>
                 <NavLink to='/reviews' activeClassName="active">
-                    <img id= 'projectImg' src='images/projects/fishing.jpg' alt='projectImg'></img>
+                    <img id= 'projectImg' src='images/projects/reviews.jpeg' alt='projectImg'></img>
                         <div id="bigTitle"><h1>Reviews</h1>
                         </div>
                 </NavLink>
