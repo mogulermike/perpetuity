@@ -11,61 +11,63 @@ import Destin from './components/Locations/Destin';
 import Wildlife from './components/Locations/Wildlife';
 import Pallette from './components/Projects/Pallette';
 
-
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Reviews from './components/Projects/Reviews/Reviews';
-
-
+import FlagGame from './components/Projects/FlagGame/FlagGame';
 
 function App() {
   return (
-      <div className="App">
-        <Header />
-        
-        <Switch>
-          <Route exact path={["/home","/"]} >
-              <HomePage />
-          </Route>
+    <div className='App'>
+      <Header />
 
-          <Route path="/fish" >
-            <Fish></Fish>
-          </Route>
+      <Switch>
+        <Route exact path={['/home', '/']}>
+          <HomePage />
+        </Route>
 
-          <Route path="/roadtrips">
-            <Roadtrips></Roadtrips>
-          </Route>
+        <Route path='/fish'>
+          <Fish></Fish>
+        </Route>
 
-          <Route path="/sedona">
-            <Sedona></Sedona>
-          </Route>
+        <Route path='/photography'>
+          <Roadtrips></Roadtrips>
+        </Route>
 
-          <Route path="/winterpark">
-            <Winterpark></Winterpark>
-          </Route>
+        <Route path='/sedona'>
+          <Sedona></Sedona>
+        </Route>
 
-          <Route path="/destin">
-            <Destin></Destin>
-          </Route>
+        <Route path='/winterpark'>
+          <Winterpark></Winterpark>
+        </Route>
 
-          <Route path="/wildlife">
-            <Wildlife></Wildlife>
-          </Route>
+        <Route path='/destin'>
+          <Destin></Destin>
+        </Route>
 
-          <Route path="/projects" >
-            <Projects />
-          </Route>
+        <Route path='/wildlife'>
+          <Wildlife></Wildlife>
+        </Route>
 
-          <Route path="/pallette" >
-            <Pallette></Pallette>
-          </Route>
-          
-          <Route path="/reviews" >
-            <Reviews></Reviews>
-          </Route>
-        </Switch>
-      </div>
-    );
+        <Route path='/projects'>
+          <Projects />
+        </Route>
+
+        <Route path='/pallette'>
+          <Pallette></Pallette>
+        </Route>
+
+        <Route path='/reviews'>
+          <Reviews></Reviews>
+        </Route>
+
+        <Route path='/flags'>
+          <FlagGame></FlagGame>
+        </Route>
+      </Switch>
+    </div>
+  );
 }
 
 export default App;
