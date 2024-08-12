@@ -3,33 +3,33 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
-
-
 const HeaderCSS = styled.div`
-   
-    display: flex;
-    justify-content:space-between;
-    color: white;
-    align-items:center;
-    width : 85vw;
-    height: 70px;   
+  display: flex;
+  justify-content: space-between;
+  color: white;
+  align-items: center;
+  width: 85vw;
+  height: 70px;
+  // position: fixed;
+  // top: 0;
+  // padding-top: 15px;
 
-    a {
+  a {
     text-decoration: none;
     color: white;
     margin: 10px 5px;
     white-space: nowrap;
-    }
+  }
 
-    .name{
-        display:flex;
-    }
+  .name {
+    display: flex;
+  }
 
-    .active {
-    color: #FFBD35;
+  .active {
+    color: #ffbd35;
     text-align: center;
-    }
-`
+  }
+`;
 
 // nav .active {
 //     background-color: #FFBD35;
@@ -47,7 +47,7 @@ const HeaderCSS = styled.div`
 //     margin: 10px 5px;
 //     white-space: nowrap;
 //   }
-  
+
 //   nav {
 //     display: flex;
 //     align-content: center;
@@ -56,26 +56,28 @@ const HeaderCSS = styled.div`
 //     margin-right: 8vw;
 //     margin-left: 8vw;
 //   }
-  
-
 
 const Header = () => {
-    return (
-        <HeaderCSS>
-            <div id='name'>
-                <h1>Michael Manning</h1>
-            </div>
+  return (
+    <HeaderCSS>
+      <div id='name'>
+        <h1>Michael Manning</h1>
+      </div>
 
-
-            <div>
-                <NavLink to='/home' activeClassName="active">Home</NavLink>
-                <NavLink to='/projects' activeClassName="active">Projects</NavLink>
-                {/* <NavLink to='/fish' activeClassName="active">Fishing</NavLink> */}
-                <NavLink to='/roadtrips' activeClassName="active">Roadtrips</NavLink>
-            </div>
-             
-        </HeaderCSS>
-    )
-}
+      <div>
+        <NavLink to='/home' activeClassName='active'>
+          Home
+        </NavLink>
+        <NavLink to='/projects' activeClassName='active'>
+          Projects
+        </NavLink>
+        {/* <NavLink to='/fish' activeClassName="active">Fishing</NavLink> */}
+        <NavLink to='/photography' activeClassName='active'>
+          Photography
+        </NavLink>
+      </div>
+    </HeaderCSS>
+  );
+};
 
 export default Header;
