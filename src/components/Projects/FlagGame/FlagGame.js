@@ -58,82 +58,116 @@ const CustomCSS = styled.div`
   }
 `;
 
-const questions = [
-  {
-    flag: 'images/Projects/flags/flag.jpg',
-    options: ['Germany', 'Australia', 'Brazil', 'Marshall Islands'],
-    correct: 'Germany',
-  },
-  {
-    flag: 'images/Projects/flags/flag.jpg',
-    options: ['Germany', 'Australia', 'Brazil', 'Marshall Islands'],
-    correct: 'Australia',
-  },
-  {
-    flag: 'images/Projects/flags/flag.jpg',
-    options: ['Germany', 'Australia', 'Brazil', 'Marshall Islands'],
-    correct: 'Brazil',
-  },
-  {
-    flag: 'images/Projects/flags/flag.jpg',
-    options: ['Germany', 'Australia', 'Brazil', 'Marshall Islands'],
-    correct: 'Germany',
-  },
-  {
-    flag: 'images/Projects/flags/flag.jpg',
-    options: ['Germany', 'Australia', 'Brazil', 'Marshall Islands'],
-    correct: 'Germany',
-  },
-  {
-    flag: 'images/Projects/flags/flag.jpg',
-    options: ['Germany', 'Australia', 'Brazil', 'Marshall Islands'],
-    correct: 'Germany',
-  },
-  {
-    flag: 'images/Projects/flags/flag.jpg',
-    options: ['Germany', 'Australia', 'Brazil', 'Marshall Islands'],
-    correct: 'Germany',
-  },
-  {
-    flag: 'images/Projects/flags/flag.jpg',
-    options: ['Germany', 'Australia', 'Brazil', 'Marshall Islands'],
-    correct: 'Germany',
-  },
-  {
-    flag: 'images/Projects/flags/flag.jpg',
-    options: ['Germany', 'Australia', 'Brazil', 'Marshall Islands'],
-    correct: 'Germany',
-  },
-  {
-    flag: 'images/Projects/flags/flag.jpg',
-    options: ['Germany', 'Australia', 'Brazil', 'Marshall Islands'],
-    correct: 'Germany',
-  },
-  {
-    flag: 'images/Projects/flags/flag.jpg',
-    options: ['Germany', 'Australia', 'Brazil', 'Marshall Islands'],
-    correct: 'Germany',
-  },
-  {
-    flag: 'images/Projects/flags/flag.jpg',
-    options: ['Germany', 'Australia', 'Brazil', 'Marshall Islands'],
-    correct: 'Germany',
-  },
-  {
-    flag: 'images/Projects/flags/flag.jpg',
-    options: ['Germany', 'Australia', 'Brazil', 'Marshall Islands'],
-    correct: 'Germany',
-  },
-  {
-    flag: 'images/Projects/flags/flag.jpg',
-    options: ['Germany', 'Australia', 'Brazil', 'Marshall Islands'],
-    correct: 'Germany',
-  },
-];
-
-const shuffleArray = (array) => {
-  return array.sort(() => Math.random() - 0.5);
+const countryCodes = {
+  af: 'Afghanistan',
+  al: 'Albania',
+  dz: 'Algeria',
+  ao: 'Angola',
+  ar: 'Argentina',
+  am: 'Armenia',
+  au: 'Australia',
+  at: 'Austria',
+  az: 'Azerbaijan',
+  bh: 'Bahrain',
+  bd: 'Bangladesh',
+  by: 'Belarus',
+  be: 'Belgium',
+  bz: 'Belize',
+  bj: 'Benin',
+  bt: 'Bhutan',
+  bo: 'Bolivia',
+  ba: 'Bosnia and Herzegovina',
+  bw: 'Botswana',
+  br: 'Brazil',
+  bg: 'Bulgaria',
+  bf: 'Burkina Faso',
+  bi: 'Burundi',
+  kh: 'Cambodia',
+  cm: 'Cameroon',
+  ca: 'Canada',
+  cv: 'Cape Verde',
+  cf: 'Central African Republic',
+  td: 'Chad',
+  cl: 'Chile',
+  cn: 'China',
+  co: 'Colombia',
+  km: 'Comoros',
+  cg: 'Congo',
+  cd: 'Democratic Republic of the Congo',
+  cr: 'Costa Rica',
+  ci: 'Ivory Coast',
+  hr: 'Croatia',
+  cu: 'Cuba',
+  cy: 'Cyprus',
+  cz: 'Czech Republic',
+  dk: 'Denmark',
+  dj: 'Djibouti',
+  dm: 'Dominica',
+  do: 'Dominican Republic',
+  ec: 'Ecuador',
+  eg: 'Egypt',
+  sv: 'El Salvador',
+  gq: 'Equatorial Guinea',
+  er: 'Eritrea',
+  np: 'Nepal',
 };
+
+function getRandomCountryCodes(codes, count) {
+  const keys = Object.keys(codes);
+  const selected = [];
+
+  while (selected.length < count) {
+    const randomIndex = Math.floor(Math.random() * keys.length);
+    const countryCode = keys[randomIndex];
+
+    if (!selected.includes(countryCode)) {
+      selected.push(countryCode);
+    }
+  }
+
+  return selected;
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function getRandomOptions(codes, correctCode, count) {
+  const keys = Object.keys(codes);
+  const selectedOptions = new Set();
+
+  // Ensure the correct answer is included
+  selectedOptions.add(codes[correctCode]);
+
+  while (selectedOptions.size < count) {
+    const randomIndex = Math.floor(Math.random() * keys.length);
+    const randomCountryName = codes[keys[randomIndex]];
+
+    if (!selectedOptions.has(randomCountryName)) {
+      selectedOptions.add(randomCountryName);
+    }
+  }
+
+  return shuffleArray([...selectedOptions]);
+}
+
+const selectedCountryCodes = getRandomCountryCodes(countryCodes, 11);
+
+const questions = selectedCountryCodes.map((code) => {
+  const options = getRandomOptions(countryCodes, code, 4);
+
+  return {
+    flag: `https://countryflagsapi.netlify.app/flag/${code}.svg`,
+    options: options,
+    correct: countryCodes[code],
+  };
+});
+
+console.log('questions', questions);
 
 const FlagGame = () => {
   const [currentQuestion, setCurrentQuestion] = useState(1);
@@ -158,7 +192,7 @@ const FlagGame = () => {
   const handleNextQuestion = () => {
     setShowAnswer(false);
     setSelectedOption(null);
-    if (currentQuestion < 3) {
+    if (currentQuestion < 10) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       setModalIsOpen(true);
@@ -175,12 +209,15 @@ const FlagGame = () => {
     setModalIsOpen(false);
   };
 
-  const shuffledOptions = shuffleArray([...questions[currentQuestion].options]);
-
   return (
     <CustomCSS>
       <div id='gameContainer'>
-        <img id='img' src={questions[currentQuestion].flag} alt='flag'></img>
+        <img
+          style={{ height: '30vh' }}
+          id='img'
+          src={questions[currentQuestion].flag}
+          alt='flag'
+        ></img>
         <h3 style={{ marginBottom: '0px' }}>Question: {currentQuestion}/10</h3>
 
         <h2>What country does this flag represent?</h2>
@@ -240,7 +277,7 @@ const FlagGame = () => {
         </div>
 
         {showAnswer ? (
-          currentQuestion < 3 ? (
+          currentQuestion < 10 ? (
             <button
               style={{ transform: 'scale(1.4)' }}
               onClick={handleNextQuestion}
