@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
+import Button from '@mui/material/Button';
 import Modal from 'react-modal';
 
 const customStyles = {
@@ -17,13 +18,15 @@ const customStyles = {
   },
 };
 
+// const CustomButton = styled(Button)
+
 const CustomCSS = styled.div`
   #gameContainer {
     position: relative;
     display: flex;
     flex-wrap: wrap;
-    width: 500px;
-    margin: 20px;
+    width: 100%;
+    margin-top: 20px;
     justify-content: center;
     color: white;
     flex-direction: column;
@@ -32,7 +35,7 @@ const CustomCSS = styled.div`
 
   #optionsWrapper {
     display: flex;
-    width: 400px;
+    width: 300px;
     align-items: center;
     flex-direction: column;
   }
@@ -55,6 +58,35 @@ const CustomCSS = styled.div`
 
   .selected {
     border: 4px solid #ffbd35;
+  }
+
+  .responsive {
+    height: 30vh;
+  }
+
+  .imgContainter {
+    height: 300px;
+  }
+
+  /* Styles for tablets or smaller screens */
+  @media (max-width: 768px) {
+    img.responsive {
+      max-width: 90%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    h2 {
+      font-size: 16px;
+    }
+
+    h3 {
+      font-size: 14px;
+    }
+
+    #optionsWrapper {
+      width: 250px;
+    }
   }
 `;
 
@@ -212,12 +244,21 @@ const FlagGame = () => {
   return (
     <CustomCSS>
       <div id='gameContainer'>
-        <img
-          style={{ height: '30vh' }}
-          id='img'
-          src={questions[currentQuestion].flag}
-          alt='flag'
-        ></img>
+        <div
+          id='imgContainter'
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <img
+            class='responsive'
+            id='img'
+            src={questions[currentQuestion].flag}
+            alt='flag'
+          ></img>
+        </div>
         <h3 style={{ marginBottom: '0px' }}>Question: {currentQuestion}/10</h3>
 
         <h2>What country does this flag represent?</h2>
@@ -245,15 +286,16 @@ const FlagGame = () => {
               >
                 {showAnswer &&
                   option === questions[currentQuestion].correct && (
-                    <CheckIcon fontSize='large' sx={{ color: 'lime' }} />
+                    <CheckIcon sx={{ color: 'lime' }} />
                   )}
                 {showAnswer &&
                   selectedOption === option &&
                   selectedOption !== questions[currentQuestion].correct && (
-                    <ClearIcon fontSize='large' color='error' />
+                    <ClearIcon sx={{ fontSize: '1.5rem' }} color='error' />
                   )}
               </div>
               <div
+                style={{ textAlign: 'center' }}
                 className={`option 
                   ${selectedOption === option ? 'selected' : ''} 
                   ${
@@ -278,28 +320,22 @@ const FlagGame = () => {
 
         {showAnswer ? (
           currentQuestion < 10 ? (
-            <button
-              style={{ transform: 'scale(1.4)' }}
-              onClick={handleNextQuestion}
-            >
+            <Button onClick={handleNextQuestion} variant='contained'>
               Next Question
-            </button>
+            </Button>
           ) : (
-            <button
-              style={{ transform: 'scale(1.4)' }}
-              onClick={handleNextQuestion}
-            >
+            <Button onClick={handleNextQuestion} variant='contained'>
               View Results
-            </button>
+            </Button>
           )
         ) : (
-          <button
-            style={{ transform: 'scale(1.4)' }}
+          <Button
             onClick={handleSubmit}
             disabled={!selectedOption}
+            variant='contained'
           >
             Submit
-          </button>
+          </Button>
         )}
       </div>
       <Modal

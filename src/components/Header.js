@@ -1,70 +1,79 @@
-import React from 'react';
+import React, { useState } from 'react';
 // import { Link } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const HeaderCSS = styled.div`
   display: flex;
   justify-content: space-between;
-  color: white;
   align-items: center;
   width: 85vw;
   height: 70px;
-  // position: fixed;
-  // top: 0;
-  // padding-top: 15px;
+  color: white;
+  position: relative; /* Position relative to contain the dropdown */
 
-  a {
-    text-decoration: none;
-    color: white;
-    margin: 10px 5px;
-    white-space: nowrap;
+  .burger-icon {
+    font-size: 28px;
+    cursor: pointer;
+    display: none; /* Hide by default, show on mobile */
   }
 
-  .name {
+  .menu {
     display: flex;
+    align-items: center;
+
+    a {
+      text-decoration: none;
+      color: white;
+      margin: 0 15px;
+      white-space: nowrap;
+    }
+
+    .active {
+      color: red;
+    }
   }
 
-  .active {
-    color: #ffbd35;
-    text-align: center;
+  @media (max-width: 768px) {
+    .burger-icon {
+      display: block;
+    }
+
+    .menu {
+      display: ${(props) => (props.isOpen ? 'block' : 'none')};
+      position: absolute;
+      top: 70px;
+      right: 0px;
+      background-color: #333;
+      width: 85%;
+      text-align: right;
+      padding: 10px 20px;
+      z-index: 1000; /* Ensures the menu is in front of other elements */
+
+      a {
+        display: block;
+        margin: 10px 0;
+      }
+    }
   }
 `;
 
-// nav .active {
-//     background-color: #FFBD35;
-//     color: rgb(45, 45, 45);
-//     border: 2px solid rgb(28, 28, 28);
-//     text-align: center;
-//     padding: 5px 5px;
-//   }
-//   nav a {
-//     text-decoration: none;
-//     color: white;
-//     border: 2px solid rgb(130, 130, 130);
-//     padding: 6px;
-//     border-radius: 4px;
-//     margin: 10px 5px;
-//     white-space: nowrap;
-//   }
-
-//   nav {
-//     display: flex;
-//     align-content: center;
-//     justify-content: space-between;
-//     width: 300vw;
-//     margin-right: 8vw;
-//     margin-left: 8vw;
-//   }
-
 const Header = () => {
-  return (
-    <HeaderCSS>
-      <div id='name'>
-        <h1>Michael Manning</h1>
-      </div>
+  const [isOpen, setIsOpen] = useState(false);
 
-      <div>
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return (
+    <HeaderCSS isOpen={isOpen}>
+      <div id='name'>
+        <h1>MM</h1>
+      </div>
+      <MenuIcon className='burger-icon' onClick={toggleMenu} />
+
+      <div className='menu'>
         <NavLink to='/home' activeClassName='active'>
           Home
         </NavLink>
