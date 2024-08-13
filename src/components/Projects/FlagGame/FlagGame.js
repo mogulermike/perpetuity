@@ -5,6 +5,8 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button';
 import Modal from 'react-modal';
 
+// const CustomButton = styled(Button)
+
 const customStyles = {
   content: {
     top: '50%',
@@ -18,15 +20,13 @@ const customStyles = {
   },
 };
 
-// const CustomButton = styled(Button)
-
 const CustomCSS = styled.div`
   #gameContainer {
     position: relative;
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 8px;
     justify-content: center;
     color: white;
     flex-direction: column;
@@ -78,10 +78,7 @@ const CustomCSS = styled.div`
 
     h2 {
       font-size: 16px;
-    }
-
-    h3 {
-      font-size: 14px;
+      margin: 0px 0px 8px 0px;
     }
 
     #optionsWrapper {
@@ -259,7 +256,6 @@ const FlagGame = () => {
             alt='flag'
           ></img>
         </div>
-        <h3 style={{ marginBottom: '0px' }}>Question: {currentQuestion}/10</h3>
 
         <h2>What country does this flag represent?</h2>
 
@@ -312,7 +308,7 @@ const FlagGame = () => {
                   }`}
                 onClick={() => handleOptionClick(option)}
               >
-                <h3>{option}</h3>
+                <h3 style={{ fontSize: '14px' }}>{option}</h3>
               </div>
             </div>
           ))}
@@ -337,6 +333,9 @@ const FlagGame = () => {
             Submit
           </Button>
         )}
+        <h3 style={{ fontSize: '14px', marginTop: '10px' }}>
+          Question: {currentQuestion}/10
+        </h3>
       </div>
       <Modal
         isOpen={modalIsOpen}
