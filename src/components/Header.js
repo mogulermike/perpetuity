@@ -66,6 +66,10 @@ const Header = () => {
     setIsOpen(!isOpen);
   };
 
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
+
   return (
     <HeaderCSS isOpen={isOpen}>
       <div id='name'>
@@ -74,14 +78,13 @@ const Header = () => {
       <MenuIcon className='burger-icon' onClick={toggleMenu} />
 
       <div className='menu'>
-        <NavLink to='/home' activeClassName='active'>
+        <NavLink to='/home' activeClassName='active' onClick={closeMenu}>
           Home
         </NavLink>
-        <NavLink to='/projects' activeClassName='active'>
+        <NavLink to='/projects' activeClassName='active' onClick={closeMenu}>
           Projects
         </NavLink>
-        {/* <NavLink to='/fish' activeClassName="active">Fishing</NavLink> */}
-        <NavLink to='/photography' activeClassName='active'>
+        <NavLink to='/photography' activeClassName='active' onClick={closeMenu}>
           Photography
         </NavLink>
       </div>
