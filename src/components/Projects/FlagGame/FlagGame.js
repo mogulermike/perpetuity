@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -184,7 +184,7 @@ function getRandomOptions(codes, correctCode, count) {
   return shuffleArray([...selectedOptions]);
 }
 
-const selectedCountryCodes = getRandomCountryCodes(countryCodes, 11);
+const selectedCountryCodes = getRandomCountryCodes(countryCodes, 10);
 
 const questions = selectedCountryCodes.map((code) => {
   const options = getRandomOptions(countryCodes, code, 4);
@@ -199,11 +199,12 @@ const questions = selectedCountryCodes.map((code) => {
 console.log('questions', questions);
 
 const FlagGame = () => {
-  const [currentQuestion, setCurrentQuestion] = useState(1);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [results, setResults] = useState([]);
 
   const handleOptionClick = (option) => {
     if (!showAnswer) {
@@ -216,12 +217,19 @@ const FlagGame = () => {
       setScore(score + 1);
     }
     setShowAnswer(true);
+
+    const isCorrect = selectedOption === questions[currentQuestion].correct;
+    setResults([...results, isCorrect]);
   };
+
+  useEffect(() => {
+    console.log('results', results);
+  }, [results]);
 
   const handleNextQuestion = () => {
     setShowAnswer(false);
     setSelectedOption(null);
-    if (currentQuestion < 10) {
+    if (currentQuestion < 9) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       setModalIsOpen(true);
@@ -232,6 +240,7 @@ const FlagGame = () => {
     setModalIsOpen(false);
     setCurrentQuestion(0);
     setScore(0);
+    setResults([]);
   };
 
   const handleCloseModal = () => {
@@ -250,7 +259,7 @@ const FlagGame = () => {
           }}
         >
           <img
-            class='responsive'
+            className='responsive'
             id='img'
             src={questions[currentQuestion].flag}
             alt='flag'
@@ -315,7 +324,7 @@ const FlagGame = () => {
         </div>
 
         {showAnswer ? (
-          currentQuestion < 10 ? (
+          currentQuestion < 9 ? (
             <Button onClick={handleNextQuestion} variant='contained'>
               Next Question
             </Button>
@@ -334,7 +343,7 @@ const FlagGame = () => {
           </Button>
         )}
         <h3 style={{ fontSize: '14px', marginTop: '10px' }}>
-          Question: {currentQuestion}/10
+          Question: {currentQuestion + 1}/10
         </h3>
       </div>
       <Modal
@@ -345,6 +354,52 @@ const FlagGame = () => {
       >
         <h2>Game Over!</h2>
         <p>You got {score} out of 10 correct.</p>
+        <div
+          id='resultsListContainer'
+          style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+        >
+          {questions.map((question, index) => (
+            <div
+              key={index}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                height: '20px', // Ensure all rows have the same height
+              }}
+            >
+              {/* Column 1: Checkmark or X */}
+              <div style={{ width: '40px', textAlign: 'center' }}>
+                {results[index] ? (
+                  <CheckIcon sx={{ color: 'lime' }} />
+                ) : (
+                  <ClearIcon sx={{ fontSize: '1.5rem' }} color='error' />
+                )}
+              </div>
+
+              {/* Column 2: Flag image */}
+              <div style={{ width: '40px', textAlign: 'center' }}>
+                <img
+                  src={question.flag}
+                  alt='flag'
+                  style={{ width: '30px', height: '20px' }}
+                />
+              </div>
+
+              {/* Column 3: Country name */}
+              <div
+                style={{
+                  flex: 1,
+                  textAlign: 'left',
+                  marginLeft: '10px',
+                  paddingBottom: '7px',
+                }}
+              >
+                <p style={{ margin: 0 }}>{question.correct}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
         <button onClick={handlePlayAgain}>Play Again</button>
         <button onClick={handleCloseModal}>Close</button>
       </Modal>
