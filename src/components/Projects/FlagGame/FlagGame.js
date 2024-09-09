@@ -3,21 +3,22 @@ import styled from 'styled-components';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button';
-import Modal from 'react-modal';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
 
 // const CustomButton = styled(Button)
 
 const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    padding: '20px',
-    textAlign: 'center',
-  },
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'gray',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+  textAlign: 'center',
+  justifyContent: 'center',
 };
 
 const CustomCSS = styled.div`
@@ -347,61 +348,65 @@ const FlagGame = () => {
         </h3>
       </div>
       <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={handleCloseModal}
-        style={customStyles}
-        contentLabel='Game Over'
+        keepMounted
+        open={modalIsOpen}
+        onClose={handleCloseModal}
+        aria-labelledby='keep-mounted-modal-title'
+        aria-describedby='keep-mounted-modal-description'
       >
-        <h2>Game Over!</h2>
-        <p>You got {score} out of 10 correct.</p>
-        <div
-          id='resultsListContainer'
-          style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
-        >
-          {questions.map((question, index) => (
-            <div
-              key={index}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                height: '20px', // Ensure all rows have the same height
-              }}
-            >
-              {/* Column 1: Checkmark or X */}
-              <div style={{ width: '40px', textAlign: 'center' }}>
-                {results[index] ? (
-                  <CheckIcon sx={{ color: 'lime' }} />
-                ) : (
-                  <ClearIcon sx={{ fontSize: '1.5rem' }} color='error' />
-                )}
-              </div>
-
-              {/* Column 2: Flag image */}
-              <div style={{ width: '40px', textAlign: 'center' }}>
-                <img
-                  src={question.flag}
-                  alt='flag'
-                  style={{ width: '30px', height: '20px' }}
-                />
-              </div>
-
-              {/* Column 3: Country name */}
+        <Box sx={customStyles}>
+          <h2>Game Over!</h2>
+          <p>You got {score} out of 10 correct.</p>
+          <div id='resultsListContainer'>
+            {questions.map((question, index) => (
               <div
+                key={index}
                 style={{
-                  flex: 1,
-                  textAlign: 'left',
-                  marginLeft: '10px',
-                  paddingBottom: '7px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '20px', // Ensure all rows have the same height
+                  padding: '8px',
                 }}
               >
-                <p style={{ margin: 0 }}>{question.correct}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+                {/* Column 1: Checkmark or X */}
+                <div style={{ width: '40px', textAlign: 'center' }}>
+                  {results[index] ? (
+                    <CheckIcon sx={{ color: 'lime' }} />
+                  ) : (
+                    <ClearIcon sx={{ fontSize: '1.5rem' }} color='error' />
+                  )}
+                </div>
 
-        <button onClick={handlePlayAgain}>Play Again</button>
-        <button onClick={handleCloseModal}>Close</button>
+                {/* Column 2: Flag image */}
+                <div style={{ width: '60px', textAlign: 'left' }}>
+                  <img
+                    src={question.flag}
+                    alt='flag'
+                    style={{ width: 'auto', height: '30px', margin: '4px' }}
+                  />
+                </div>
+
+                {/* Column 3: Country name */}
+                <div
+                  style={{
+                    flex: 1,
+                    textAlign: 'left',
+                    marginLeft: '20px',
+                    paddingBottom: '7px',
+                  }}
+                >
+                  <p style={{ margin: 0 }}>{question.correct}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button style={{ margin: '10px' }} onClick={handlePlayAgain}>
+            Play Again
+          </button>
+          <button onClick={handleCloseModal}>Close</button>
+        </Box>
       </Modal>
     </CustomCSS>
   );
