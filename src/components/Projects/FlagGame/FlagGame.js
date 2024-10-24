@@ -5,6 +5,8 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
+import { supabase } from '../../../services/supabaseClient';
+import Auth from '../../Auth'; // Assuming the Auth component is for sign-up and sign-in
 
 // const CustomButton = styled(Button)
 
@@ -206,6 +208,8 @@ const FlagGame = () => {
   const [showAnswer, setShowAnswer] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [results, setResults] = useState([]);
+  const [user, setUser] = useState(null);
+  const [showAuth, setShowAuth] = useState(false); // Track whether to show the form
 
   const handleOptionClick = (option) => {
     if (!showAnswer) {
@@ -226,6 +230,26 @@ const FlagGame = () => {
   useEffect(() => {
     console.log('results', results);
   }, [results]);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: session } = await supabase.auth.getSession();
+      setUser(session?.user ?? null); // Set the user if they're signed in
+    };
+
+    checkUser();
+
+    // Listen for authentication changes (in case user signs in or out)
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null); // Update user state based on the session
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe(); // Cleanup listener on component unmount
+    };
+  }, []);
 
   const handleNextQuestion = () => {
     setShowAnswer(false);
@@ -346,6 +370,18 @@ const FlagGame = () => {
         <h3 style={{ fontSize: '14px', marginTop: '10px' }}>
           Question: {currentQuestion + 1}/10
         </h3>
+        {!user && (
+          <div>
+            <p>To track your progress, sign up or sign in:</p>
+            {!showAuth ? (
+              <button onClick={() => setShowAuth(true)}>
+                Sign Up / Sign In
+              </button>
+            ) : (
+              <Auth /> // Show the form when the button is clicked
+            )}
+          </div>
+        )}
       </div>
       <Modal
         keepMounted
