@@ -209,7 +209,7 @@ const FlagGame = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [results, setResults] = useState([]);
   const [user, setUser] = useState(null);
-  const [showAuth, setShowAuth] = useState(false); // Track whether to show the form
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false); // Track whether to show auth modal
 
   const handleOptionClick = (option) => {
     if (!showAnswer) {
@@ -373,13 +373,14 @@ const FlagGame = () => {
         {!user && (
           <div>
             <p>To track your progress, sign up or sign in:</p>
-            {!showAuth ? (
-              <button onClick={() => setShowAuth(true)}>
-                Sign Up / Sign In
-              </button>
-            ) : (
-              <Auth /> // Show the form when the button is clicked
-            )}
+            <button onClick={() => setIsAuthModalOpen(true)}>
+              Sign Up / Sign In
+            </button>
+            {/* Pass the modal open state and toggle function as props */}
+            <Auth
+              isModalOpen={isAuthModalOpen}
+              setIsModalOpen={setIsAuthModalOpen}
+            />
           </div>
         )}
       </div>

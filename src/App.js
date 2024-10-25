@@ -10,62 +10,35 @@ import Winterpark from './components/Locations/Winterpark';
 import Destin from './components/Locations/Destin';
 import Wildlife from './components/Locations/Wildlife';
 import Pallette from './components/Projects/Pallette';
-
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom'; // Updated imports
 import Reviews from './components/Projects/Reviews/Reviews';
 import FlagGame from './components/Projects/FlagGame/FlagGame';
+import Auth from './components/Auth';
+import ConfirmEmail from './components/ConfirmEmail';
 
 function App() {
   return (
     <div className='App'>
       <Header />
-
-      <Switch>
-        <Route exact path={['/home', '/']}>
-          <HomePage />
-        </Route>
-
-        <Route path='/fish'>
-          <Fish></Fish>
-        </Route>
-
-        <Route path='/photography'>
-          <Roadtrips></Roadtrips>
-        </Route>
-
-        <Route path='/sedona'>
-          <Sedona></Sedona>
-        </Route>
-
-        <Route path='/winterpark'>
-          <Winterpark></Winterpark>
-        </Route>
-
-        <Route path='/destin'>
-          <Destin></Destin>
-        </Route>
-
-        <Route path='/wildlife'>
-          <Wildlife></Wildlife>
-        </Route>
-
-        <Route path='/projects'>
-          <Projects />
-        </Route>
-
-        <Route path='/pallette'>
-          <Pallette></Pallette>
-        </Route>
-
-        <Route path='/reviews'>
-          <Reviews></Reviews>
-        </Route>
-
-        <Route path='/flags'>
-          <FlagGame></FlagGame>
-        </Route>
-      </Switch>
+      <Routes>
+        {' '}
+        {/* Use Routes instead of Switch */}
+        <Route path='/' element={<HomePage />} />
+        <Route path='/home' element={<HomePage />} />
+        <Route path='/fish' element={<Fish />} />
+        <Route path='/photography' element={<Roadtrips />} />
+        <Route path='/sedona' element={<Sedona />} />
+        <Route path='/winterpark' element={<Winterpark />} />
+        <Route path='/destin' element={<Destin />} />
+        <Route path='/wildlife' element={<Wildlife />} />
+        <Route path='/projects' element={<Projects />} />
+        <Route path='/pallette' element={<Pallette />} />
+        <Route path='/reviews' element={<Reviews />} />
+        <Route path='/flags' element={<FlagGame />} />
+        <Route path='/confirm-email' element={<ConfirmEmail />} />
+        <Route path='/auth' element={<Auth />} />
+      </Routes>
     </div>
   );
 }
