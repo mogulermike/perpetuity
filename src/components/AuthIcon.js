@@ -33,15 +33,19 @@ const AuthIcon = () => {
 
     checkUserStatus();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setIsLoggedIn(!!session?.user);
-        const userDisplayName =
-          session?.user?.user_metadata?.username || session?.user?.email;
-        setUsername(userDisplayName);
-        console.log('Auth State Changed. Display Username:', userDisplayName);
-      }
-    );
+    // Listen for authentication changes (in case user signs in or out)
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsLoggedIn(!!session?.user);
+      const userDisplayName =
+        session?.user?.user_metadata?.username || session?.user?.email;
+      setUsername(userDisplayName);
+      console.log('Auth State Changed. Display Username:', userDisplayName);
+    });
+
+    // Clean up the auth listener on component unmount
+    return () => {
+      data?.subscription?.unsubscribe();
+    };
   }, []);
 
   const handleLogout = async () => {

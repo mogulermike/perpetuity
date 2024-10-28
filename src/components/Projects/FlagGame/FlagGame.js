@@ -218,8 +218,6 @@ const FlagGame = () => {
   const [userId, setUserId] = useState(null);
   const [username, setUsername] = useState('Guest'); // Default to "Guest"
 
-  const [statsLoading, setStatsLoading] = useState(true); // Add loading state
-
   useEffect(() => {
     const fetchSession = async () => {
       const {
@@ -332,15 +330,18 @@ const FlagGame = () => {
     checkUser();
 
     // Listen for authentication changes (in case user signs in or out)
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null); // Update user state based on the session
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null); // Update user state based on the session
 
-        if (_event === 'SIGNED_OUT') {
-          setIsAuthModalOpen(false);
-        }
+      if (_event === 'SIGNED_OUT') {
+        setIsAuthModalOpen(false);
       }
-    );
+    });
+
+    // Clean up the auth listener on component unmount
+    return () => {
+      data?.subscription.unsubscribe();
+    };
   }, []);
 
   const handleNextQuestion = () => {

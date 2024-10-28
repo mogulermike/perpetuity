@@ -88,7 +88,7 @@ const Auth = ({ isModalOpen, setIsModalOpen }) => {
     e.preventDefault();
 
     // Sign up the user with email, password, and username
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -111,7 +111,7 @@ const Auth = ({ isModalOpen, setIsModalOpen }) => {
     e.preventDefault();
 
     // Sign in the user with email and password
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
