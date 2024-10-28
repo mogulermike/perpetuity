@@ -64,7 +64,10 @@ const Roadtrips = () => {
     <TripCss>
       <div id='tripsContainer'>
         <div id='one' className='navClick'>
-          <NavLink to='/sedona' activeClassName='active'>
+          <NavLink
+            to='/sedona'
+            className={({ isActive }) => (isActive ? 'active' : '')}
+          >
             <img id='tripImg' src='images/Sedona/1.jpg' alt='tripImg'></img>
             <div id='location'>
               <h1>Sedona</h1>
@@ -75,7 +78,10 @@ const Roadtrips = () => {
           </NavLink>
         </div>
         <div id='two' className='navClick'>
-          <NavLink to='/winterpark' activeClassName='active'>
+          <NavLink
+            to='/winterpark'
+            className={({ isActive }) => (isActive ? 'active' : '')}
+          >
             <img id='tripImg' src='images/winterpark.jpg' alt='tripImg'></img>
             <div id='location'>
               <h1>WinterPark</h1>
@@ -94,7 +100,10 @@ const Roadtrips = () => {
                 </NavLink>
             </div> */}
         <div id='four' className='navClick'>
-          <NavLink to='/wildlife' activeClassName='active'>
+          <NavLink
+            to='/wildlife'
+            className={({ isActive }) => (isActive ? 'active' : '')}
+          >
             <img id='tripImg' src='images/Wildlife/4.jpg' alt='tripImg'></img>
             <div id='location'>
               <h1>Wildlife</h1>

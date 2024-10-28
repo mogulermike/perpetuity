@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 // import { Link } from 'react-router-dom';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import MenuIcon from '@mui/icons-material/Menu';
+import AuthIcon from './AuthIcon';
 
 const HeaderCSS = styled.div`
   display: flex;
@@ -70,6 +71,12 @@ const Header = () => {
     setIsOpen(false);
   };
 
+  const location = useLocation(); // Get the current location
+  // console.log the location to see the pathname
+  console.log(location);
+
+  const isFlagsApp = location.pathname === '/flags'; // Adjust the path as needed
+
   return (
     <HeaderCSS isOpen={isOpen}>
       <div id='name'>
@@ -78,13 +85,26 @@ const Header = () => {
       <MenuIcon className='burger-icon' onClick={toggleMenu} />
 
       <div className='menu'>
-        <NavLink to='/home' activeClassName='active' onClick={closeMenu}>
+        {isFlagsApp && <AuthIcon />}
+        <NavLink
+          to='/home'
+          className={({ isActive }) => (isActive ? 'active' : '')}
+          onClick={closeMenu}
+        >
           Home
         </NavLink>
-        <NavLink to='/projects' activeClassName='active' onClick={closeMenu}>
+        <NavLink
+          to='/projects'
+          className={({ isActive }) => (isActive ? 'active' : '')}
+          onClick={closeMenu}
+        >
           Projects
         </NavLink>
-        <NavLink to='/photography' activeClassName='active' onClick={closeMenu}>
+        <NavLink
+          to='/photography'
+          className={({ isActive }) => (isActive ? 'active' : '')}
+          onClick={closeMenu}
+        >
           Photography
         </NavLink>
       </div>
