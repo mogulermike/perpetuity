@@ -154,7 +154,10 @@ export default function Reviews() {
             </Box>
           </Modal>
           <div id='one' className='navClick'>
-            <NavLink to='/callister' activeClassName='active'>
+            <NavLink
+              to='/callister'
+              className={({ isActive }) => (isActive ? 'active' : '')}
+            >
               <img
                 id='reviewImg'
                 src='images\Projects\Reviews\callister.jpg'
@@ -163,7 +166,10 @@ export default function Reviews() {
             </NavLink>
           </div>
           <div id='two' className='navClick'>
-            <NavLink to='/project hail mary' activeClassName='active'>
+            <NavLink
+              to='/project hail mary'
+              className={({ isActive }) => (isActive ? 'active' : '')}
+            >
               <img
                 id='reviewImg'
                 src='images\Projects\Reviews\phm.jpg'
@@ -172,7 +178,10 @@ export default function Reviews() {
             </NavLink>
           </div>
           <div id='two' className='navClick'>
-            <NavLink to='/artemis' activeClassName='active'>
+            <NavLink
+              to='/artemis'
+              className={({ isActive }) => (isActive ? 'active' : '')}
+            >
               <img
                 id='reviewImg'
                 src='images\Projects\Reviews\artemis.jpg'
@@ -181,7 +190,10 @@ export default function Reviews() {
             </NavLink>
           </div>
           <div id='two' className='navClick'>
-            <NavLink to='/martian' activeClassName='active'>
+            <NavLink
+              to='/martian'
+              className={({ isActive }) => (isActive ? 'active' : '')}
+            >
               <img
                 id='reviewImg'
                 src='images\Projects\Reviews\martian.jpg'
@@ -190,7 +202,10 @@ export default function Reviews() {
             </NavLink>
           </div>
           <div id='two' className='navClick'>
-            <NavLink to='/playtest' activeClassName='active'>
+            <NavLink
+              to='/playtest'
+              className={({ isActive }) => (isActive ? 'active' : '')}
+            >
               <img
                 id='reviewImg'
                 src='images\Projects\Reviews\playtest.jpg'
@@ -199,7 +214,10 @@ export default function Reviews() {
             </NavLink>
           </div>
           <div id='two' className='navClick'>
-            <NavLink to='/queensgambit' activeClassName='active'>
+            <NavLink
+              to='/queensgambit'
+              className={({ isActive }) => (isActive ? 'active' : '')}
+            >
               <img
                 id='reviewImg'
                 src='images\Projects\Reviews\queensgambit.jpg'
@@ -208,7 +226,10 @@ export default function Reviews() {
             </NavLink>
           </div>
           <div id='one' className='navClick'>
-            <NavLink to='/hollowknight' activeClassName='active'>
+            <NavLink
+              to='/hollowknight'
+              className={({ isActive }) => (isActive ? 'active' : '')}
+            >
               <img
                 id='reviewImg'
                 src='images\Projects\Reviews\hollowknight.jpg'
@@ -217,7 +238,10 @@ export default function Reviews() {
             </NavLink>
           </div>
           <div id='two' className='navClick'>
-            <NavLink to='/nosedive' activeClassName='active'>
+            <NavLink
+              to='/nosedive'
+              className={({ isActive }) => (isActive ? 'active' : '')}
+            >
               <img
                 id='reviewImg'
                 src='images\Projects\Reviews\nosedive.jpg'
@@ -226,7 +250,10 @@ export default function Reviews() {
             </NavLink>
           </div>
           <div id='two' className='navClick'>
-            <NavLink to='/bettercallsaul' activeClassName='active'>
+            <NavLink
+              to='/bettercallsaul'
+              className={({ isActive }) => (isActive ? 'active' : '')}
+            >
               <img
                 id='reviewImg'
                 src='images\Projects\Reviews\bettercallsaul.jpg'
@@ -235,7 +262,10 @@ export default function Reviews() {
             </NavLink>
           </div>
           <div id='two' className='navClick'>
-            <NavLink to='/ozark' activeClassName='active'>
+            <NavLink
+              to='/ozark'
+              className={({ isActive }) => (isActive ? 'active' : '')}
+            >
               <img
                 id='reviewImg'
                 src='images\Projects\Reviews\ozark.jpg'

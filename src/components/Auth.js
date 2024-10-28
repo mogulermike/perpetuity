@@ -14,6 +14,9 @@ const modalStyle = {
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
+  display: 'flex',
+  alignItems: 'center',
+  flexDirection: 'column',
 };
 
 const Auth = ({ isModalOpen, setIsModalOpen }) => {
@@ -22,15 +25,77 @@ const Auth = ({ isModalOpen, setIsModalOpen }) => {
   const [username, setUsername] = useState(''); // Capture username
   const [authError, setAuthError] = useState(null);
   const [isSignUp, setIsSignUp] = useState(true); // State to toggle between sign-up and sign-in
+  const [hasInitializedStats, setHasInitializedStats] = useState(false); // Track initialization
+
+  // Function to handle user stats initialization
+  const initializeUserStats = async (userId) => {
+    // Check if user_stats already exists for this user
+    const { data: existingStats, error: statsError } = await supabase
+      .from('User_Stats')
+      .select('*')
+      .eq('user_id', userId);
+
+    if (statsError) {
+      console.error('Error fetching user stats:', statsError);
+      return false; // Indicate failure
+    }
+
+    // If no stats exist, create a new entry
+    if (existingStats.length === 0) {
+      const { error: insertError } = await supabase
+        .from('User_Stats')
+        .insert([{ user_id: userId, total_correct: 0, total_questions: 0 }]);
+
+      if (insertError) {
+        console.error('Error creating user stats:', insertError);
+        return false; // Indicate failure
+      } else {
+        console.log('User stats initialized successfully');
+      }
+    }
+    return true; // Indicate success
+  };
+
+  useEffect(() => {
+    // Only add the listener if it hasn't been set up already
+    if (!window.authListener) {
+      const { data: authListener } = supabase.auth.onAuthStateChange(
+        async (event, session) => {
+          if (event === 'SIGNED_IN' && session) {
+            const success = await initializeUserStats(session.user.id);
+            if (success) {
+              console.log('User stats are ready to be fetched.');
+              setHasInitializedStats(true); // Track initialization to avoid repeats
+            }
+          }
+        }
+      );
+      // Store listener globally to prevent duplicate setup
+      window.authListener = authListener;
+    }
+
+    return () => {
+      // Clean up listener when the component unmounts
+      if (window.authListener) {
+        window.authListener.subscription?.unsubscribe();
+        delete window.authListener;
+      }
+    };
+  }, [hasInitializedStats]);
 
   // Handle sign-up with username
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    // Sign up the user with email and password
+    // Sign up the user with email, password, and username
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          username, // Include the username here
+        },
+      },
     });
 
     if (error) {
@@ -55,33 +120,14 @@ const Auth = ({ isModalOpen, setIsModalOpen }) => {
       setAuthError(error.message);
     } else {
       setAuthError(null);
-      // Handle successful sign in (e.g., redirect or notify the user)
+      // Handle successful sign-in (e.g., redirect or notify the user)
       alert('Signed in successfully!');
     }
   };
 
-  // Listen for auth state change and insert username into the profile once confirmed
-  useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === 'SIGNED_IN' && session?.user) {
-          // User has confirmed their email and signed in
-          const { data, error } = await supabase
-            .from('profiles')
-            .insert([{ id: session.user.id, username }]);
-
-          if (error) {
-            console.error('Error inserting profile:', error);
-          } else {
-            console.log('Profile created successfully');
-          }
-        }
-      }
-    );
-  }, [username]); // username dependency ensures it updates when the username changes
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    console.log('Modal closed');
   };
 
   const handleToggle = () => {
@@ -103,6 +149,7 @@ const Auth = ({ isModalOpen, setIsModalOpen }) => {
           style={{
             display: 'flex',
             flexDirection: 'column',
+            alignItems: 'center',
             gap: '10px',
             maxWidth: '300px', // Limit the width of the form
             margin: '0 auto', // Center the form horizontally if needed
@@ -132,9 +179,31 @@ const Auth = ({ isModalOpen, setIsModalOpen }) => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type='submit'>{isSignUp ? 'Sign Up' : 'Sign In'}</button>
+          <button
+            style={{
+              width: '120px', // Set desired width
+              padding: '4px', // Adjust padding for a smaller button size
+              textAlign: 'center',
+              cursor: 'pointer',
+              borderRadius: '4px', // Optional for rounded corners
+              marginTop: '10px',
+            }}
+            type='submit'
+          >
+            {isSignUp ? 'Sign Up' : 'Sign In'}
+          </button>
         </form>
-        <button onClick={handleToggle}>
+        <button
+          style={{
+            width: '180px', // Set desired width
+            padding: '4px', // Adjust padding for a smaller button size
+            textAlign: 'center',
+            cursor: 'pointer',
+            borderRadius: '4px', // Optional for rounded corners
+            marginTop: '10px',
+          }}
+          onClick={handleToggle}
+        >
           {isSignUp
             ? 'Already have an account? Sign In'
             : 'Need an account? Sign Up'}

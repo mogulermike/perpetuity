@@ -86,13 +86,25 @@ const Header = () => {
 
       <div className='menu'>
         {isFlagsApp && <AuthIcon />}
-        <NavLink to='/home' activeClassName='active' onClick={closeMenu}>
+        <NavLink
+          to='/home'
+          className={({ isActive }) => (isActive ? 'active' : '')}
+          onClick={closeMenu}
+        >
           Home
         </NavLink>
-        <NavLink to='/projects' activeClassName='active' onClick={closeMenu}>
+        <NavLink
+          to='/projects'
+          className={({ isActive }) => (isActive ? 'active' : '')}
+          onClick={closeMenu}
+        >
           Projects
         </NavLink>
-        <NavLink to='/photography' activeClassName='active' onClick={closeMenu}>
+        <NavLink
+          to='/photography'
+          className={({ isActive }) => (isActive ? 'active' : '')}
+          onClick={closeMenu}
+        >
           Photography
         </NavLink>
       </div>

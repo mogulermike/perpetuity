@@ -63,7 +63,10 @@ const Projects = () => {
     <CustomCSS>
       <div id='projectsContainer'>
         <div id='two' className='navClick'>
-          <NavLink to='/reviews' activeClassName='active'>
+          <NavLink
+            to='/reviews'
+            className={({ isActive }) => (isActive ? 'active' : '')}
+          >
             <img
               id='projectImg'
               src='images/projects/reviews.jpeg'
@@ -75,7 +78,7 @@ const Projects = () => {
           </NavLink>
         </div>
         {/* <div id="one" className='navClick'>
-                <NavLink to='/pallette' activeClassName="active">
+                <NavLink to='/pallette' className={({ isActive }) => (isActive ? 'active' : '')} >
                     <img id= 'projectImg' src='images/projects/pallette.jpg' alt='projectImg'></img>
                         <div id="bigTitle"><h1>Color</h1>
                             <div id="littleTitle"><h1>Pallette</h1></div>
@@ -83,7 +86,10 @@ const Projects = () => {
                 </NavLink>
             </div> */}
         <div id='two' className='navClick'>
-          <NavLink to='/fish' activeClassName='active'>
+          <NavLink
+            to='/fish'
+            className={({ isActive }) => (isActive ? 'active' : '')}
+          >
             <img
               id='projectImg'
               src='images/projects/fishing.jpg'
@@ -98,7 +104,10 @@ const Projects = () => {
           </NavLink>
         </div>
         <div id='two' className='navClick'>
-          <NavLink to='/flags' activeClassName='active'>
+          <NavLink
+            to='/flags'
+            className={({ isActive }) => (isActive ? 'active' : '')}
+          >
             <img
               id='projectImg'
               src='images/projects/flagsGame.jpg'

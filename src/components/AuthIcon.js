@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../services/supabaseClient';
 import LoginIcon from '@mui/icons-material/Login';
 import Face5Icon from '@mui/icons-material/Face5';
+import Popover from '@mui/material/Popover';
+import Typography from '@mui/material/Typography';
 
 const AuthIcon = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleAuthClick = async () => {
+  const handleAuthClick = (event) => {
     if (isLoggedIn) {
-      // Log out the user
-      await supabase.auth.signOut();
+      setAnchorEl(anchorEl ? null : event.currentTarget); // Toggle popover anchor
     } else {
       // Trigger your sign-in logic here (open modal or navigate)
     }
@@ -19,24 +22,38 @@ const AuthIcon = () => {
     const checkUserStatus = async () => {
       const {
         data: { session },
-      } = await supabase.auth.getSession(); // Check session
-      setIsLoggedIn(!!session?.user); // Set to true if user is logged in, otherwise false
+      } = await supabase.auth.getSession();
+      setIsLoggedIn(!!session?.user);
+      const userDisplayName =
+        session?.user?.user_metadata?.username || session?.user?.email;
+      setUsername(userDisplayName);
+      console.log('Session User:', session?.user);
+      console.log('Display Username:', userDisplayName);
     };
 
-    checkUserStatus(); // Call the function to check login status
+    checkUserStatus();
 
-    // Listen for changes in the auth state
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        setIsLoggedIn(!!session?.user); // Update state based on auth event
+        setIsLoggedIn(!!session?.user);
+        const userDisplayName =
+          session?.user?.user_metadata?.username || session?.user?.email;
+        setUsername(userDisplayName);
+        console.log('Auth State Changed. Display Username:', userDisplayName);
       }
     );
+  }, []);
 
-    // Cleanup listener on unmount
-    return () => {
-      authListener.unsubscribe();
-    };
-  }, []); // Empty dependency array ensures this runs only once when component mounts
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setAnchorEl(null); // Close popover on logout
+    setUsername(null);
+    console.log('Logged out, AnchorEl:', anchorEl);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null); // Close popover on close
+  };
 
   return (
     <div
@@ -45,16 +62,25 @@ const AuthIcon = () => {
         width: '24px',
         height: '24px',
         borderRadius: '50%',
-        border: `2px solid ${isLoggedIn ? 'green' : 'gray'}`, // Green when logged in, gray when not
+        border: `2px solid ${isLoggedIn ? 'green' : 'gray'}`,
+        cursor: 'pointer',
       }}
     >
-      {isLoggedIn ? (
-        <Face5Icon /> // Use an icon for logged-in state (user icon)
-      ) : (
-        <span>
-          <LoginIcon />
-        </span> // Use an icon for logged-out state (lock icon)
-      )}
+      {isLoggedIn ? <Face5Icon /> : <LoginIcon />}
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      >
+        <div style={{ padding: '16px' }}>
+          <Typography sx={{ p: 2 }}>Signed in as {username}</Typography>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+      </Popover>
     </div>
   );
 };

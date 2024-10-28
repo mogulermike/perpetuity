@@ -23,7 +23,7 @@ const ConfirmEmail = () => {
         alert('There was an error confirming your email. Please try again.');
       } else {
         alert('Email confirmed successfully! You can now log in.');
-        navigate('/login'); // Redirect to the login page after confirmation
+        navigate('/flags'); // Redirect to the login page after confirmation
       }
     };
 

@@ -7,6 +7,7 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import { supabase } from '../../../services/supabaseClient';
 import Auth from '../../Auth'; // Assuming the Auth component is for sign-up and sign-in
+import Typography from '@mui/material/Typography';
 
 // const CustomButton = styled(Button)
 
@@ -210,10 +211,96 @@ const FlagGame = () => {
   const [results, setResults] = useState([]);
   const [user, setUser] = useState(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false); // Track whether to show auth modal
+  const [userStats, setUserStats] = useState({
+    total_correct: 0,
+    total_questions: 0,
+  });
+  const [userId, setUserId] = useState(null);
+  const [username, setUsername] = useState('Guest'); // Default to "Guest"
+
+  const [statsLoading, setStatsLoading] = useState(true); // Add loading state
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (session?.user?.user_metadata?.sub) {
+        setUserId(session.user.user_metadata.sub);
+        setUsername(session.user.user_metadata.username);
+      } else {
+        console.error('User metadata sub (user_id) not found');
+      }
+    };
+
+    fetchSession();
+  }, []);
+
+  useEffect(() => {
+    if (userId) {
+      fetchUserStats(userId);
+    }
+  }, [userId]);
+
+  const fetchUserStats = async (userId) => {
+    const { data, error } = await supabase
+      .from('User_Stats')
+      .select('total_correct, total_questions')
+      .eq('user_id', userId); // Remove .single() to see full response
+
+    if (error) {
+      console.error('Error fetching user stats:', error);
+    } else if (data.length === 0) {
+      console.log('No data found for the specified user ID:', userId);
+    } else {
+      setUserStats({
+        total_correct: data[0].total_correct,
+        total_questions: data[0].total_questions,
+      });
+      console.log('User stats fetched:', data[0]);
+    }
+  };
 
   const handleOptionClick = (option) => {
     if (!showAnswer) {
       setSelectedOption(option);
+    }
+  };
+
+  // Update user stats in Supabase
+  const updateUserStats = async (userId, isCorrect) => {
+    try {
+      // Fetch the current stats for the user
+      const { data: currentStats, error: fetchError } = await supabase
+        .from('User_Stats')
+        .select('total_correct, total_questions')
+        .eq('user_id', userId)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      // Calculate the new values
+      const newTotalCorrect = isCorrect
+        ? currentStats.total_correct + 1
+        : currentStats.total_correct;
+      const newTotalQuestions = currentStats.total_questions + 1;
+
+      // Update the user stats
+      const { data, error } = await supabase
+        .from('User_Stats')
+        .update({
+          total_correct: newTotalCorrect,
+          total_questions: newTotalQuestions,
+        })
+        .eq('user_id', userId);
+
+      if (error) throw error;
+
+      console.log('User stats updated:', data);
+      fetchUserStats(userId);
+    } catch (error) {
+      console.error('Error updating user stats:', error);
     }
   };
 
@@ -225,6 +312,11 @@ const FlagGame = () => {
 
     const isCorrect = selectedOption === questions[currentQuestion].correct;
     setResults([...results, isCorrect]);
+
+    // Update user stats in Supabase
+    if (user) {
+      updateUserStats(user.id, isCorrect);
+    }
   };
 
   useEffect(() => {
@@ -243,12 +335,12 @@ const FlagGame = () => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user ?? null); // Update user state based on the session
+
+        if (_event === 'SIGNED_OUT') {
+          setIsAuthModalOpen(false);
+        }
       }
     );
-
-    return () => {
-      authListener.subscription.unsubscribe(); // Cleanup listener on component unmount
-    };
   }, []);
 
   const handleNextQuestion = () => {
@@ -278,17 +370,96 @@ const FlagGame = () => {
         <div
           id='imgContainter'
           style={{
-            display: 'flex',
-            justifyContent: 'center',
+            display: 'grid',
+            gridTemplateColumns: '1fr 2fr 1fr',
+            gap: '20px',
             alignItems: 'center',
           }}
         >
-          <img
-            className='responsive'
-            id='img'
-            src={questions[currentQuestion].flag}
-            alt='flag'
-          ></img>
+          <div></div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <img
+              className='responsive'
+              id='img'
+              src={questions[currentQuestion].flag}
+              alt='flag'
+            ></img>
+          </div>
+          <div>
+            {user ? (
+              <div>
+                <Typography align='center' style={{ fontSize: '14px' }}>
+                  <strong>Your Progress</strong>
+                </Typography>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr 1fr',
+                    columnGap: '10px', // Horizontal gap only
+                    rowGap: '0px', // No vertical gap
+                    maxWidth: '200px',
+                    textAlign: 'center',
+                  }}
+                >
+                  <Typography align='center' style={{ fontSize: '12px' }}>
+                    <strong>Correct</strong>
+                  </Typography>
+                  <Typography align='center' style={{ fontSize: '12px' }}>
+                    <strong>Answered</strong>
+                  </Typography>
+                  <Typography align='center' style={{ fontSize: '12px' }}>
+                    <strong>Username</strong>
+                  </Typography>
+
+                  <Typography align='center' style={{ fontSize: '12px' }}>
+                    {userStats.total_correct}
+                  </Typography>
+                  <Typography align='center' style={{ fontSize: '12px' }}>
+                    {userStats.total_questions}
+                  </Typography>
+                  <Typography align='center' style={{ fontSize: '12px' }}>
+                    {username}
+                  </Typography>
+                </div>
+              </div>
+            ) : (
+              <div
+                style={{
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  width: '200px',
+                }}
+              >
+                <Typography component='span' style={{ fontSize: '14px' }}>
+                  To track your progress,
+                </Typography>
+                <Typography component='span' style={{ fontSize: '14px' }}>
+                  sign up or sign in:
+                </Typography>
+                <button
+                  onClick={() => setIsAuthModalOpen(true)}
+                  style={{
+                    width: '120px', // Set desired width
+                    padding: '4px', // Adjust padding for a smaller button size
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    borderRadius: '4px', // Optional for rounded corners
+                    marginTop: '10px',
+                  }}
+                >
+                  <Typography style={{ fontSize: '12px' }}>
+                    Sign Up / Sign In
+                  </Typography>
+                </button>
+                <Auth
+                  isModalOpen={isAuthModalOpen}
+                  setIsModalOpen={setIsAuthModalOpen}
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         <h2>What country does this flag represent?</h2>
@@ -370,19 +541,6 @@ const FlagGame = () => {
         <h3 style={{ fontSize: '14px', marginTop: '10px' }}>
           Question: {currentQuestion + 1}/10
         </h3>
-        {!user && (
-          <div>
-            <p>To track your progress, sign up or sign in:</p>
-            <button onClick={() => setIsAuthModalOpen(true)}>
-              Sign Up / Sign In
-            </button>
-            {/* Pass the modal open state and toggle function as props */}
-            <Auth
-              isModalOpen={isAuthModalOpen}
-              setIsModalOpen={setIsAuthModalOpen}
-            />
-          </div>
-        )}
       </div>
       <Modal
         keepMounted
