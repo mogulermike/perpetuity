@@ -83,26 +83,28 @@ const Auth = ({ isModalOpen, setIsModalOpen }) => {
     };
   }, [hasInitializedStats]);
 
-  // Handle sign-up with username
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    // Sign up the user with email, password, and username
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          username, // Include the username here
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { username },
         },
-      },
-    });
+      });
 
-    if (error) {
-      setAuthError(error.message);
-    } else {
-      setAuthError(null);
-      alert('Check your email for the confirmation link!');
+      if (error) {
+        console.error('Error signing up:', error);
+        setAuthError(error.message);
+      } else {
+        setAuthError(null);
+        alert('Check your email for the confirmation link!');
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      setAuthError('An unexpected error occurred. Please try again.');
     }
   };
 
@@ -118,6 +120,7 @@ const Auth = ({ isModalOpen, setIsModalOpen }) => {
 
     if (error) {
       setAuthError(error.message);
+      console.log('whoops');
     } else {
       setAuthError(null);
       // Handle successful sign-in (e.g., redirect or notify the user)

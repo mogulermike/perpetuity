@@ -219,20 +219,27 @@ const FlagGame = () => {
   const [username, setUsername] = useState('Guest'); // Default to "Guest"
 
   useEffect(() => {
-    const fetchSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (session?.user?.user_metadata?.sub) {
-        setUserId(session.user.user_metadata.sub);
-        setUsername(session.user.user_metadata.username);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        // Session is available after sign-in, proceed with setting user details
+        const { user } = session;
+        if (user?.user_metadata?.sub) {
+          setUserId(user.user_metadata.sub);
+          setUsername(user.user_metadata.username);
+        } else {
+          console.error('User metadata sub (user_id) not found');
+        }
       } else {
-        console.error('User metadata sub (user_id) not found');
+        console.log('No active session');
       }
-    };
+    });
 
-    fetchSession();
+    // Clean up the listener on unmount
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
